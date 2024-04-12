@@ -5,11 +5,12 @@ useSeoMeta({
   title: "Travel Frontend",
   description:
     "Travel Frontend is a travel website that helps you find the best destinations for your next vacation.",
-  ogImage: "/og-image.png",
+  ogImage: "og-image.png",
+  applicationName: "Travel Frontend",
 });
 
-const travelsStore = useTravelStore();
-await travelsStore.fetchTravels();
+// Fetch all travels/destinations from the backend to populate the store
+await useTravelStore().fetchTravels();
 </script>
 
 <template>

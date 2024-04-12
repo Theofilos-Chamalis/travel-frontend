@@ -1,8 +1,21 @@
-<script lang="ts" setup>
-import { useTravelStore } from "../stores/travels";
-const travelsStore = useTravelStore();
+<script setup lang="ts">
+import { ref, type VNodeRef } from "vue";
+
+const tripsOverviewRef = ref<VNodeRef | null>(null);
+
+const scrollToTripsOverview = () => {
+  if (tripsOverviewRef.value) {
+    tripsOverviewRef.value.$el.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+};
 </script>
+
 <template>
-  <HeroSection />
-  <div>SKATA MELATA</div>
+  <main>
+    <HeroSection :scroll-to-trips="scrollToTripsOverview" />
+    <TripsOverview ref="tripsOverviewRef" />
+  </main>
 </template>
