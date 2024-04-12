@@ -35,5 +35,3 @@ const {
     </div>
   </NuxtLink>
 </template>
-
-<style></style>

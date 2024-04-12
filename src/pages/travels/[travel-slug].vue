@@ -63,5 +63,3 @@ const moodsToDisplay = Object.fromEntries(
     </div>
   </div>
 </template>
-
-<style></style>
