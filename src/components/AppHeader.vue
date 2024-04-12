@@ -27,15 +27,26 @@ const { travels } = useTravelStore();
           tabindex="0"
           class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
         >
-          <li><a>Item 1</a></li>
+          <li class="text-white">
+            <NuxtLink :to="'/'">Home</NuxtLink>
+          </li>
           <li>
-            <a>Parent</a>
-            <ul class="p-2">
-              <li><a>Submenu 1</a></li>
-              <li><a>Submenu 2</a></li>
+            <p class="text-white">Trips</p>
+            <ul v-if="!travels || travels.length === 0" class="p-2">
+              <li>
+                <p class="w-full text-nowrap text-center">No available trips</p>
+              </li>
+            </ul>
+            <ul v-else class="p-2">
+              <li v-for="travel in travels" :key="travel.id">
+                <NuxtLink
+                  :to="`/travels/${travel.slug}`"
+                  class="w-full text-nowrap text-center"
+                  >{{ travel.nameShort }}</NuxtLink
+                >
+              </li>
             </ul>
           </li>
-          <li><a>Item 3</a></li>
         </ul>
       </div>
       <NuxtLink class="btn btn-ghost text-xl text-white" :to="'/'"

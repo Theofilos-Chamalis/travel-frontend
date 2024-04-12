@@ -16,7 +16,7 @@ const {
       class="shadow-xlt card w-96 cursor-pointer border bg-base-100 hover:border hover:border-primary"
     >
       <figure>
-        <img :src="travelImage" alt="Shoes" />
+        <img :src="travelImage" alt="Travel Card" />
       </figure>
       <div class="card-body">
         <h2 class="card-title line-clamp-1 flex text-white">

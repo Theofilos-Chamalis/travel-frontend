@@ -10,5 +10,11 @@ export default defineNuxtConfig({
     typeCheck: "build", // Enable type checking at build time
     strict: true, // Enable strict type checking options
   },
+  runtimeConfig: {
+    // Configure runtime environment variables
+    public: {
+      BACKEND_URL: process.env.BACKEND_URL,
+    },
+  },
   telemetry: false,
 });
