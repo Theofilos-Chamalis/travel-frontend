@@ -1,33 +1,80 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 
-const runtimeConfig = useRuntimeConfig();
-const route = useRoute();
-const travelsStore = useTravelStore();
-
-const travelsFromStore = travelsStore.travels;
-const { travelslug } = route.params;
-const { BACKEND_URL } = runtimeConfig.public;
+const { BACKEND_URL } = useRuntimeConfig().public;
+const { travelslug } = useRoute().params;
+const { travels, showNotificationAction, addBookingAction } = useTravelStore();
 
 // Fetch the travel data from the backend
 const { data, pending, error } = await useFetch<Travel[]>(
   `${BACKEND_URL}/destination/${travelslug}`,
 );
-const tripDataArray = data.value;
-const isDataEmpty =
-  !pending.value && (!tripDataArray || tripDataArray.length === 0);
+const tripDataResponse = data.value;
+const isResponseEmpty =
+  !pending.value && (!tripDataResponse || tripDataResponse.length === 0);
 
-if (error.value || isDataEmpty) {
+if (error.value || isResponseEmpty) {
   await navigateTo("/", { redirectCode: 404 });
 }
 
 const tripData =
-  tripDataArray && tripDataArray.length > 0 ? tripDataArray[0] : null;
+  tripDataResponse && tripDataResponse.length > 0 ? tripDataResponse[0] : null;
 const imageUrl =
-  travelsFromStore.find((travel) => travel.slug === travelslug)?.image || "";
+  travels.find((travel) => travel.slug === travelslug)?.image || "";
 const moodsToDisplay = Object.fromEntries(
   Object.entries(tripData?.moods || {}).filter(([, value]) => value > 49),
 );
+
+const showAddToCartModalHandler = () => {
+  const modal = document.getElementById("booking_modal") as HTMLDialogElement;
+  modal?.showModal();
+};
+
+const addBookingToCartHandler = () => {
+  const modal = document.getElementById("booking_modal") as HTMLDialogElement;
+
+  const email = (
+    document.querySelector('input[type="email"]') as HTMLInputElement
+  ).value;
+  const numberOfPeople = (
+    document.querySelector('input[type="number"]') as HTMLInputElement
+  ).value;
+
+  fetch(`${BACKEND_URL}/booking`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userEmail: email,
+      numSeats: Number(numberOfPeople),
+      destinationId: tripData?.id || "",
+    }),
+  })
+    .then((response) => response.json())
+    .then((bookingData) => {
+      if (!bookingData || bookingData.length === 0 || bookingData.error) {
+        showNotificationAction({
+          type: "error",
+          message: `Booking failed${bookingData.message ? ": " + bookingData.message[0] : ""}`,
+        });
+        return;
+      }
+
+      addBookingAction(bookingData);
+      showNotificationAction({
+        type: "success",
+        message: "Booking successful! Pay now to confirm your booking!",
+      });
+      modal?.close();
+    })
+    .catch(() => {
+      showNotificationAction({
+        type: "error",
+        message: "Booking failed. Please try again",
+      });
+    });
+};
 </script>
 
 <template>
@@ -58,8 +105,17 @@ const moodsToDisplay = Object.fromEntries(
             </div>
           </div>
         </div>
-        <button class="btn btn-primary w-full text-white">Add to cart</button>
+        <button
+          class="btn btn-primary w-full text-white"
+          @click="showAddToCartModalHandler"
+        >
+          Book Now
+        </button>
       </div>
+      <BookingModal
+        :travel="tripData as Travel"
+        :add-booking-to-cart-handler="addBookingToCartHandler"
+      />
     </div>
   </div>
 </template>

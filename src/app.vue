@@ -10,7 +10,7 @@ useSeoMeta({
 });
 
 // Fetch all travels/destinations from the backend to populate the store
-await useTravelStore().fetchTravels();
+await useTravelStore().fetchTravelsAction();
 </script>
 
 <template>

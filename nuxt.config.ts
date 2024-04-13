@@ -16,5 +16,8 @@ export default defineNuxtConfig({
       BACKEND_URL: process.env.BACKEND_URL,
     },
   },
+  devServer: {
+    port: 3100, // Change the default port for local dev to 3100
+  },
   telemetry: false,
 });

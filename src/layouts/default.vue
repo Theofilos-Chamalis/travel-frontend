@@ -4,5 +4,6 @@
   <div>
     <AppHeader />
     <slot />
+    <ToasterNotification />
   </div>
 </template>
