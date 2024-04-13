@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-const props = defineProps<{ scrollToTrips: () => void }>();
+const props = defineProps<{
+  scrollToTrips: () => void;
+}>();
 </script>
 
 <template>

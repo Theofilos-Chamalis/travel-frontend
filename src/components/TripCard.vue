@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import type { Travel } from "../stores/travels";
-const props = defineProps<{ travel: Travel }>();
+import type { Travel } from "~/types";
+
+const props = defineProps<{
+  travel: Travel;
+}>();
 const {
   slug: travelSlug,
   nameShort: travelName,

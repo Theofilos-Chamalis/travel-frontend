@@ -1,24 +1,19 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
+import { getTravelBySlug, createBooking } from "~/services";
+import type { Booking } from "~/types";
 
-const { BACKEND_URL } = useRuntimeConfig().public;
 const { travelslug } = useRoute().params;
 const { travels, showNotificationAction, addBookingAction } = useTravelStore();
 
-// Fetch the travel data from the backend
-const { data, pending, error } = await useFetch<Travel[]>(
-  `${BACKEND_URL}/destination/${travelslug}`,
-);
-const tripDataResponse = data.value;
-const isResponseEmpty =
-  !pending.value && (!tripDataResponse || tripDataResponse.length === 0);
+// Fetch the travel data from the backend using the slug from the URL
+const travelFromSlug = await getTravelBySlug(travelslug);
 
-if (error.value || isResponseEmpty) {
+if (travelFromSlug.length === 0) {
   await navigateTo("/", { redirectCode: 404 });
 }
 
-const tripData =
-  tripDataResponse && tripDataResponse.length > 0 ? tripDataResponse[0] : null;
+const tripData = travelFromSlug[0];
 const imageUrl =
   travels.find((travel) => travel.slug === travelslug)?.image || "";
 const moodsToDisplay = Object.fromEntries(
@@ -40,40 +35,34 @@ const addBookingToCartHandler = () => {
     document.querySelector('input[type="number"]') as HTMLInputElement
   ).value;
 
-  fetch(`${BACKEND_URL}/booking`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      userEmail: email,
-      numSeats: Number(numberOfPeople),
-      destinationId: tripData?.id || "",
-    }),
-  })
-    .then((response) => response.json())
-    .then((bookingData) => {
-      if (!bookingData || bookingData.length === 0 || bookingData.error) {
-        showNotificationAction({
-          type: "error",
-          message: `Booking failed!${bookingData.message || "Please try again"}`,
-        });
-        return;
-      }
-
-      addBookingAction(bookingData);
-      showNotificationAction({
-        type: "success",
-        message: "Booking successful! Pay now to confirm your booking",
-      });
-      modal?.close();
-    })
-    .catch(() => {
+  createBooking({
+    userEmail: email,
+    numSeats: Number(numberOfPeople),
+    destinationId: tripData?.id || "",
+  }).then((bookingData) => {
+    if (Array.isArray(bookingData) && bookingData.length === 0) {
       showNotificationAction({
         type: "error",
         message: "Booking failed! Please try again",
       });
+      return;
+    }
+
+    if ("message" in bookingData && bookingData.message) {
+      showNotificationAction({
+        type: "error",
+        message: `Booking failed!${bookingData.message}`,
+      });
+      return;
+    }
+
+    addBookingAction(bookingData as Booking[]);
+    showNotificationAction({
+      type: "success",
+      message: "Booking successful! Pay now to confirm your booking",
     });
+    modal?.close();
+  });
 };
 </script>
 
@@ -113,7 +102,7 @@ const addBookingToCartHandler = () => {
         </button>
       </div>
       <BookingModal
-        :travel="tripData as Travel"
+        :travel="tripData"
         :add-booking-to-cart-handler="addBookingToCartHandler"
       />
     </div>

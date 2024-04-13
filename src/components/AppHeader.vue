@@ -1,18 +1,14 @@
 <script lang="ts" setup>
+import { confirmBooking } from "~/services";
+import type {
+  BookingResultsCategorized,
+  NotificationType,
+  NotificationMessage,
+} from "~/types";
 const { BACKEND_URL } = useRuntimeConfig().public;
 const travelStore = useTravelStore();
 const { showNotificationAction } = travelStore;
 const { travels, bookings } = storeToRefs(travelStore);
-
-type bookingResult = {
-  nameShort: string;
-  message: string;
-};
-
-type bookingResults = {
-  success: bookingResult[];
-  failed: bookingResult[];
-};
 
 const unConfirmedBookings = computed(() =>
   bookings?.value
@@ -41,7 +37,7 @@ const cartItems = computed(() =>
   ),
 );
 
-const showPaymentNotification = (bookingResults: bookingResults) => {
+const showPaymentNotification = (bookingResults: BookingResultsCategorized) => {
   let message: NotificationMessage = "";
   let notificationType: NotificationType = "";
 
@@ -72,29 +68,25 @@ const checkoutHandler = async () => {
     return;
   }
 
-  const bookingResults: bookingResults = {
+  const bookingResults: BookingResultsCategorized = {
     success: [],
     failed: [],
   };
 
   for (const booking of unConfirmedBookings.value) {
-    await fetch(`${BACKEND_URL}/booking/${booking.id}`, {
-      method: "PATCH",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          bookingResults.failed.push({
-            nameShort: booking.travel?.nameShort || "",
-            message: data.message,
-          });
-        } else {
-          bookingResults.success.push({
-            nameShort: booking.travel?.nameShort || "",
-            message: "",
-          });
-        }
-      });
+    await confirmBooking(booking.id).then((bookingData) => {
+      if ("message" in bookingData && bookingData.message) {
+        bookingResults.failed.push({
+          nameShort: booking.travel?.nameShort || "",
+          message: bookingData.message,
+        });
+      } else {
+        bookingResults.success.push({
+          nameShort: booking.travel?.nameShort || "",
+          message: "",
+        });
+      }
+    });
   }
 
   showPaymentNotification(bookingResults);

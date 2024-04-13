@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { Travel } from "../stores/travels";
+import type { Travel } from "~/types";
+
 const props = defineProps<{
   travel: Travel;
   addBookingToCartHandler: () => void;
