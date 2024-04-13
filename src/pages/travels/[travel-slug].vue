@@ -56,7 +56,7 @@ const addBookingToCartHandler = () => {
       if (!bookingData || bookingData.length === 0 || bookingData.error) {
         showNotificationAction({
           type: "error",
-          message: `Booking failed${bookingData.message ? ": " + bookingData.message[0] : ""}`,
+          message: `Booking failed!${bookingData.message ? bookingData.message[0] : "Please try again"}`,
         });
         return;
       }
@@ -64,14 +64,14 @@ const addBookingToCartHandler = () => {
       addBookingAction(bookingData);
       showNotificationAction({
         type: "success",
-        message: "Booking successful! Pay now to confirm your booking!",
+        message: "Booking successful! Pay now to confirm your booking",
       });
       modal?.close();
     })
     .catch(() => {
       showNotificationAction({
         type: "error",
-        message: "Booking failed. Please try again",
+        message: "Booking failed! Please try again",
       });
     });
 };
