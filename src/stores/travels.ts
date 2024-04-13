@@ -32,7 +32,7 @@ export type Booking = {
 };
 export type BookingActionPayload = Booking;
 
-export type NotificationType = "success" | "error" | "info" | "";
+export type NotificationType = "success" | "error" | "warning" | "info" | "";
 export type NotificationMessage = string;
 export type NotificationActionPayload = {
   type: NotificationType;
@@ -44,7 +44,7 @@ export const useTravelStore = defineStore("travelStore", {
     travels: Travel[];
     notificationType: NotificationType;
     notificationMessage: NotificationMessage;
-    bookings: Booking[];
+    bookings: Booking[][];
   } => ({
     travels: [],
     notificationType: "",
@@ -78,9 +78,9 @@ export const useTravelStore = defineStore("travelStore", {
       setTimeout(() => {
         this.notificationType = "";
         this.notificationMessage = "";
-      }, 10000);
+      }, 5000);
     },
-    addBookingAction(bookingPayload: BookingActionPayload) {
+    addBookingAction(bookingPayload: BookingActionPayload[]) {
       this.bookings.push(bookingPayload);
     },
   },

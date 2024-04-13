@@ -56,7 +56,7 @@ const addBookingToCartHandler = () => {
       if (!bookingData || bookingData.length === 0 || bookingData.error) {
         showNotificationAction({
           type: "error",
-          message: `Booking failed!${bookingData.message ? bookingData.message[0] : "Please try again"}`,
+          message: `Booking failed!${bookingData.message || "Please try again"}`,
         });
         return;
       }

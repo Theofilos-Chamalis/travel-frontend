@@ -9,8 +9,9 @@ const { notificationMessage, notificationType } = reactiveTravelStore;
     <div
       v-if="notificationType"
       :class="{
-        ' alert flex flex-col gap-2 text-lg text-black': true,
+        'alert flex flex-col gap-2 text-lg text-black': true,
         'alert-info': notificationType === 'info' || '',
+        'alert-warning': notificationType === 'warning',
         'alert-success': notificationType === 'success',
         'alert-error': notificationType === 'error',
       }"

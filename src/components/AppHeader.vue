@@ -1,10 +1,113 @@
 <script lang="ts" setup>
-import { useTravelStore } from "../stores/travels";
-const { travels } = useTravelStore();
+const { BACKEND_URL } = useRuntimeConfig().public;
+const travelStore = useTravelStore();
+const { showNotificationAction } = travelStore;
+const { travels, bookings } = storeToRefs(travelStore);
+
+type bookingResult = {
+  nameShort: string;
+  message: string;
+};
+
+type bookingResults = {
+  success: bookingResult[];
+  failed: bookingResult[];
+};
+
+const unConfirmedBookings = computed(() =>
+  bookings?.value
+    ?.filter((booking) => !booking[0].confirmed)
+    .map((booking) => {
+      return {
+        ...booking[0],
+        travel: travels?.value?.find(
+          (travel) => travel.id === booking[0].destinationId,
+        ),
+      };
+    }),
+);
+
+const totalPrice = computed(() =>
+  unConfirmedBookings?.value?.reduce(
+    (total, booking) => total + (booking.travel?.price || 0) * booking.numSeats,
+    0,
+  ),
+);
+
+const cartItems = computed(() =>
+  unConfirmedBookings?.value?.map(
+    (booking) =>
+      `✈️ ${booking.travel?.nameShort} X ${booking.numSeats} seats = $${(booking.travel?.price || 0) * booking.numSeats}`,
+  ),
+);
+
+const showPaymentNotification = (bookingResults: bookingResults) => {
+  let message: NotificationMessage = "";
+  let notificationType: NotificationType = "";
+
+  if (bookingResults.success.length > 0 && bookingResults.failed.length > 0) {
+    const bookingPlural =
+      bookingResults.success.length > 1 ? "bookings" : "booking";
+    message = `Payment was partially successful! The ${bookingResults.failed
+      .map((booking) => booking.nameShort)
+      .join(", ")} ${bookingPlural} failed while the rest were successful`;
+    notificationType = "warning";
+  } else if (bookingResults.failed.length > 0) {
+    message += `Payment was unsuccessful! Failed to book: ${bookingResults.failed
+      .map((booking) => booking.nameShort)
+      .join(", ")}`;
+  } else {
+    message = "Payment was successful! Enjoy your trip!";
+    notificationType = "success";
+  }
+
+  showNotificationAction({
+    type: notificationType,
+    message,
+  });
+};
+
+const checkoutHandler = async () => {
+  if (!unConfirmedBookings?.value || unConfirmedBookings.value.length === 0) {
+    return;
+  }
+
+  const bookingResults: bookingResults = {
+    success: [],
+    failed: [],
+  };
+
+  for (const booking of unConfirmedBookings.value) {
+    await fetch(`${BACKEND_URL}/booking/${booking.id}`, {
+      method: "PATCH",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          bookingResults.failed.push({
+            nameShort: booking.travel?.nameShort || "",
+            message: data.message,
+          });
+        } else {
+          bookingResults.success.push({
+            nameShort: booking.travel?.nameShort || "",
+            message: "",
+          });
+        }
+      });
+  }
+
+  showPaymentNotification(bookingResults);
+  setTimeout(() => {
+    bookings.value = [];
+  }, 5000);
+};
 </script>
 
 <template>
-  <div class="navbar rounded-lg bg-neutral text-neutral-content">
+  <div
+    class="navbar sticky top-0 z-10 rounded-lg bg-neutral text-neutral-content"
+  >
     <div class="navbar-start">
       <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -97,18 +200,38 @@ const { travels } = useTravelStore();
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <span class="badge indicator-item badge-primary badge-xs"></span>
+          <span
+            v-if="unConfirmedBookings.length > 0"
+            class="badge indicator-item badge-primary badge-xs"
+          ></span>
         </div>
       </div>
       <div
         tabindex="0"
-        class="card dropdown-content card-compact z-[1] mt-56 w-52 border-2 border-primary bg-base-100 shadow"
+        :class="[
+          'card dropdown-content card-compact z-[1] w-80 border-2 border-primary bg-base-100 shadow',
+          'mt-' + (64 + unConfirmedBookings.length * 8),
+        ]"
       >
         <div class="card-body">
-          <span class="text-lg font-bold text-white">No items in cart</span>
-          <span class="text-info">Subtotal: $0</span>
+          <span class="pb-2 text-lg font-bold text-white"
+            >{{ unConfirmedBookings.length }} items in cart</span
+          >
+          <ul>
+            <li
+              v-for="(cartItem, index) in cartItems"
+              :key="index"
+              class="text-nowrap text-white"
+            >
+              {{ cartItem }}
+            </li>
+          </ul>
+          <span class="py-2 text-green-400">Subtotal: ${{ totalPrice }}</span>
           <div class="card-actions">
-            <button class="btn btn-primary btn-block text-white">
+            <button
+              class="btn btn-primary btn-block text-white"
+              @click="checkoutHandler"
+            >
               Checkout
             </button>
           </div>
