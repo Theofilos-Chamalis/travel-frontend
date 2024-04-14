@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+/**
+ * This component provides a modal dialog to add a booking to the cart using the addBookingToCartHandler prop.
+ */
 import type { Travel } from "~/types";
 
 const props = defineProps<{

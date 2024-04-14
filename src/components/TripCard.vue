@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+/**
+ * This component provides a card to display a travel's quick info.
+ */
 import type { Travel } from "~/types";
 
 const props = defineProps<{
@@ -16,7 +19,7 @@ const {
 <template>
   <NuxtLink :to="`/travels/${travelSlug}`">
     <div
-      class="shadow-xlt card w-96 cursor-pointer border bg-base-100 hover:border hover:border-primary"
+      class="shadow-xlt card w-[22rem] cursor-pointer border bg-base-100 transition-all hover:border hover:border-primary hover:shadow-2xl hover:shadow-slate-700 md:w-96"
     >
       <figure>
         <img :src="travelImage" alt="Travel Card" />

@@ -1,14 +1,22 @@
 <script lang="ts" setup>
+/**
+ * This component provides the header of the application.
+ * It includes the navigation links and the shopping cart and is used in the layout.
+ */
 import { confirmBooking } from "~/services";
 import type {
   BookingResultsCategorized,
   NotificationType,
   NotificationMessage,
 } from "~/types";
+
 const travelStore = useTravelStore();
 const { showNotificationAction } = travelStore;
 const { travels, bookings } = storeToRefs(travelStore);
 
+/**
+ * Computed properties
+ */
 const unConfirmedBookings = computed(() =>
   bookings?.value
     ?.filter((booking) => !booking[0].confirmed)
@@ -36,6 +44,9 @@ const cartItems = computed(() =>
   ),
 );
 
+/**
+ * Methods to handle the checkout process and show the payment notification
+ */
 const showPaymentNotification = (bookingResults: BookingResultsCategorized) => {
   let message: NotificationMessage = "";
   let notificationType: NotificationType = "";
@@ -218,6 +229,7 @@ const checkoutHandler = async () => {
           <div class="card-actions">
             <button
               class="btn btn-primary btn-block text-white"
+              :disabled="unConfirmedBookings.length === 0"
               @click="checkoutHandler"
             >
               Checkout

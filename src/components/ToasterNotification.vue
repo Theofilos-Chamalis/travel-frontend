@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-const reactiveTravelStore = storeToRefs(useTravelStore());
-
-const { notificationMessage, notificationType } = reactiveTravelStore;
+/**
+ * This component provides a toast notification to display messages to the user
+ * after a booking is added to the cart or a payment is processed.
+ */
+const { notificationMessage, notificationType } = storeToRefs(useTravelStore());
 </script>
 
 <template>

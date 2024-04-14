@@ -1,3 +1,6 @@
+/**
+ * This file contains the services for the bookings.
+ */
 import type { Booking, BookingCreatePayload } from "~/types";
 import { getBackendUrl } from ".";
 

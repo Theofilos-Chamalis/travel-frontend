@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { ref, type VNodeRef } from "vue";
+/**
+ * This page provides the homepage of the application.
+ * It includes the hero section and the trips overview.
+ */
+import type { VNodeRef } from "vue";
 
+/**
+ * Use the tripsOverviewRef ref within scrollToTripsOverviewHandler to scroll to
+ * the trips overview section when the hero section button is clicked.
+ */
 const tripsOverviewRef = ref<VNodeRef | null>(null);
 
 const scrollToTripsOverviewHandler = () => {

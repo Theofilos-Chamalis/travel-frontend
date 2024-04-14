@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import { useRoute } from "vue-router";
+/**
+ * This page displays the details of a specific travel destination.
+ * It also allows the user to book a trip and add it to the cart.
+ */
 import { getTravelBySlug, createBooking } from "~/services";
 import type { Booking } from "~/types";
 
 const { travelslug } = useRoute().params;
 const { travels, showNotificationAction, addBookingAction } = useTravelStore();
 
-// Fetch the travel data from the backend using the slug from the URL
+/**
+ * Fetch the travel destination data from the API and display it on the page or redirect to the homepage if not found.
+ */
 const travelFromSlug = await getTravelBySlug(travelslug);
 
 if (travelFromSlug.length === 0) {
@@ -20,6 +25,9 @@ const moodsToDisplay = Object.fromEntries(
   Object.entries(tripData?.moods || {}).filter(([, value]) => value > 49),
 );
 
+/**
+ * Methods to handle the booking process and show the booking notification
+ */
 const showAddToCartModalHandler = () => {
   const modal = document.getElementById("booking_modal") as HTMLDialogElement;
   modal?.showModal();
@@ -69,7 +77,7 @@ const addBookingToCartHandler = () => {
 <template>
   <div class="hero min-h-screen bg-base-200">
     <div class="hero-content flex-col lg:flex-row">
-      <img :src="imageUrl" class="max-w-sm rounded-lg shadow-2xl" />
+      <img :src="imageUrl" class="max-w-xs rounded-lg shadow-2xl md:max-w-sm" />
       <div>
         <h1 class="text-pretty pt-4 text-5xl font-bold text-white md:pt-8">
           {{ tripData?.name }}
@@ -79,10 +87,14 @@ const addBookingToCartHandler = () => {
         </p>
         <div class="flex flex-col justify-between pb-8 md:flex-row">
           <div class="flex gap-4">
-            <div class="badge badge-outline p-4 text-green-400">
+            <div
+              class="badge badge-outline text-nowrap p-4 text-center text-green-400"
+            >
               Price: ${{ tripData?.price }}
             </div>
-            <div class="badge badge-outline p-4 text-secondary">
+            <div
+              class="badge badge-outline p-4 text-center text-xs text-secondary md:text-sm"
+            >
               {{ tripData?.startingDate }} to {{ tripData?.endingDate }}
             </div>
           </div>

@@ -1,4 +1,7 @@
-import { defineStore } from "pinia";
+/**
+ * This store is used to manage the travel data, notifications, and bookings and make them available to the components and pages.
+ * It also provides actions to fetch the travel data, show notifications, and add bookings to the store.
+ */
 import type {
   Travel,
   NotificationType,

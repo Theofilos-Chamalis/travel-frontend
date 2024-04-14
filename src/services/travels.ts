@@ -1,3 +1,6 @@
+/**
+ * This file contains all the services related to the travels.
+ */
 import type { Travel } from "~/types";
 import { getBackendUrl } from ".";
 

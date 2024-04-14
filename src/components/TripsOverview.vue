@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+/**
+ * This component provides the trips overview section of the application.
+ * It displays the latest trip cards available for booking in a grid layout.
+ */
 import { useTravelStore } from "~/stores/travels";
-const travelsStore = useTravelStore();
-const travels = travelsStore.travels;
+
+const { travels } = useTravelStore();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ const travels = travelsStore.travels;
       Check our latest trips out!
     </h1>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-      <div v-for="travel in travelsStore.travels" :key="travel.id">
+      <div v-for="travel in travels" :key="travel.id">
         <TripCard :travel="travel" />
       </div>
     </div>

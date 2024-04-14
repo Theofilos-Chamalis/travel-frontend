@@ -1,4 +1,7 @@
 <script setup lang="ts">
+/**
+ * This is the main application file. It populates the store by providing the travels/destinations data.
+ */
 import { useTravelStore } from "./stores/travels";
 
 useSeoMeta({
@@ -9,7 +12,6 @@ useSeoMeta({
   applicationName: "Travel Frontend",
 });
 
-// Fetch all travels/destinations from the backend to populate the store
 await useTravelStore().fetchTravelsAction();
 </script>
 

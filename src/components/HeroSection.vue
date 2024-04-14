@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+/**
+ * This component provides the hero section of the application.
+ * It includes the main title and a call to action button to scroll to the trips overview section.
+ */
 const props = defineProps<{
   scrollToTrips: () => void;
 }>();
