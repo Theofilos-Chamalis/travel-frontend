@@ -5,7 +5,6 @@ import type {
   NotificationType,
   NotificationMessage,
 } from "~/types";
-const { BACKEND_URL } = useRuntimeConfig().public;
 const travelStore = useTravelStore();
 const { showNotificationAction } = travelStore;
 const { travels, bookings } = storeToRefs(travelStore);
@@ -200,10 +199,7 @@ const checkoutHandler = async () => {
       </div>
       <div
         tabindex="0"
-        :class="[
-          'card dropdown-content card-compact z-[1] w-80 border-2 border-primary bg-base-100 shadow',
-          'mt-' + (64 + unConfirmedBookings.length * 8),
-        ]"
+        class="card dropdown-content card-compact top-16 z-[1] w-80 border-2 border-primary bg-base-100 shadow"
       >
         <div class="card-body">
           <span class="pb-2 text-lg font-bold text-white"
