@@ -73,6 +73,6 @@ First make sure to have the backend server running before initiating the tests.
 # e2e headless tests
 $ npm run test:e2e:headless
 
-# e2e tests with browser (intereactive)
+# e2e tests with browser (interactive)
 $ npm run test:e2e
 ```
