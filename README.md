@@ -6,17 +6,14 @@ A [Nuxt 3](https://nuxt.com/docs/getting-started/introduction) based frontend th
 
 <img src="https://i.imgur.com/Ev5K8mF.png" alt="Desktop Screenshot 1" width="900"/>
 </br>
-</br>
 <img src="https://i.imgur.com/S4kY2ln.png" alt="Desktop Screenshot 2" width="900"/>
-</br>
 </br>
 <img src="https://imgur.com/K6wVI22.png" alt="Desktop Screenshot 3" width="900"/>
 </br>
-</br>
 <p>
-<img src="https://imgur.com/AO157Vx.png" alt="Mobile Screenshot 1" width="300"/>
-<img src="https://imgur.com/bOkKJsG.png" alt="Mobile Screenshot 2" width="300"/>
-<img src="https://imgur.com/nMZ5XN0.png" alt="Mobile Screenshot 3" width="300"/>
+<img src="https://imgur.com/AO157Vx.png" alt="Mobile Screenshot 1" width="250"/>
+<img src="https://imgur.com/bOkKJsG.png" alt="Mobile Screenshot 2" width="250"/>
+<img src="https://imgur.com/nMZ5XN0.png" alt="Mobile Screenshot 3" width="250"/>
 </p>
 
 ## Installation Steps
