@@ -11,7 +11,9 @@
     "prod": "node .output/server/index.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "test:e2e": "concurrently \"nuxt dev\" \"cypress open\"",
+    "test:e2e:headless": "concurrently \"nuxt dev\" \"sleep 8 && cypress run\""
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.11.4",
@@ -23,6 +25,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.3.6",
+    "cypress": "^13.7.3",
     "daisyui": "^4.10.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

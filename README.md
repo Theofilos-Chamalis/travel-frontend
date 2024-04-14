@@ -68,10 +68,12 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 ## Test
 
-```bash
-# unit tests
-$ npm run test
+First make sure to have the backend server running before initiating the tests.
 
-# e2e tests
+```bash
+# e2e headless tests
+$ npm run test:e2e:headless
+
+# e2e tests with browser (intereactive)
 $ npm run test:e2e
 ```
